@@ -1,4 +1,3 @@
-package Server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,9 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
-import javafx.concurrent.Worker;
 
 import java.io.*;
 
@@ -95,9 +92,9 @@ public class ServerCommHandler extends Thread {
 
 				ArrayList<ServerCommHandler> HandlersList = server.getServerHanldesList();
 
-				for (ServerCommHandler Handler : HandlersList) // btetba3 3andy meen l fat7
+				for (ServerCommHandler Handler : HandlersList)
 				{
-					String OnlineID = " online " + Handler.getLogin() + "\n";
+					String OnlineID = "online: " + Handler.getLogin() + "\n";
 					if (!Handler.getLogin().equalsIgnoreCase(null)) {
 						if (Handler.getLogin() != this.login)
 							writer.println(OnlineID);
@@ -105,13 +102,15 @@ public class ServerCommHandler extends Thread {
 
 				}
 
-				String onlineMsg = "online:  " + login + "\n";
+				String onlineMsg = "online: " + login + "\n";
 				for (ServerCommHandler Handler : HandlersList) // btetba3 3and l nas el ba2ya eny fat7t
 				{
 					if (!Handler.getLogin().equalsIgnoreCase(this.login))
-						Handler.send(onlineMsg);
+						 Handler.send(onlineMsg);
 				}
-			} else {
+				
+			} 
+			else {
 				String msg = "incorrect username or password" + "\n";
 				writer.println(msg);
 			}
@@ -131,11 +130,13 @@ public class ServerCommHandler extends Thread {
 	public void logouthandle() {
 		try {
 
+			
+			this.send("logout");
 			server.removeHandler(this);
-			String offlineMsg = "offline:  " + login + "\n";
+			String offlineMsg = "offline: " + login + "\n";
 			ArrayList<ServerCommHandler> HandlersList = server.getServerHanldesList();
 
-			for (ServerCommHandler Handler : HandlersList) // btetba3 3and l nas el ba2ya eny fat7t
+			for (ServerCommHandler Handler : HandlersList) // Send to all online users that iam offline 
 			{
 				if (Handler.getLogin() != this.login)
 					Handler.send(offlineMsg);
@@ -156,7 +157,7 @@ public class ServerCommHandler extends Thread {
 	public void leavehandle(String[] tokens) {
 		if (tokens.length > 1) {
 			TopicSet.remove(tokens[1]);
-			send("You left group "+ tokens[1]);
+			send("You left group"+ tokens[1]);
 			
 		}
 	}
@@ -165,7 +166,7 @@ public class ServerCommHandler extends Thread {
 	public void joinhandle(String[] tokens) {
 		if (tokens.length > 1) {
 			TopicSet.add(tokens[1]);
-			send("You joined group "+ tokens[1]);
+			send("You joined group"+ tokens[1]);
 		}
 	}
 
@@ -188,7 +189,7 @@ public class ServerCommHandler extends Thread {
 						for (int i = 2; i < tokens.length; i++) {
 							messageSent = messageSent + " " + tokens[i];
 						}
-						messageSent = tokens[1] + " : " + login + ":" + messageSent;
+						messageSent = tokens[1] + ":" + login + ":" + messageSent;
 						Handler.send(messageSent);
 
 					}
